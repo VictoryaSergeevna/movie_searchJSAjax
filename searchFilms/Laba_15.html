@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+       <link rel="stylesheet" href="style.css">  
+</head>
+<body id="bb">  
+    <form name='mainForm' >
+      <input id="title" name="title" type="text" placeholder=" введите имя">
+      <br>
+       <input id="year" name="year" type="text" placeholder=" введите год">
+       <br>
+       <select id="type">
+           <option id='mov'>movies</option>
+            <option id='ser'>series</option>
+             <option id='ep'>episode</option>
+       </select>
+       <br>
+        <input type="submit" id="submit" value="Отправить" onclick="sendRequest(event)">
+    </form>   
+    <script>
+
+
+var form = document.forms.mainForm;
+//form.submit.addEventListener("click", sendRequest);
+function sendRequest(event){
+    event.preventDefault();
+    var formData = new FormData(form);
+    var request = new XMLHttpRequest();
+    var formAction=`http://www.omdbapi.com/?i=tt3896198&apikey=571755d3&t=`+form.title.value+`&y=`+form.year.value;
+    request.open("POST",formAction );
+    request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200)
+            makeBlock(request.responseText);
+    }
+    request.send(formData);
+}
+function makeBlock(str){
+   
+var json=JSON.parse(str);
+    
+let mainDiv = document.createElement(`div`);
+mainDiv.style.border='2px solid red';
+mainDiv.style.borderRadius='10px';
+mainDiv.style.float='left';
+mainDiv.style.margin='40px';
+mainDiv.style.padding='3%';
+mainDiv.style.width='50%';   
+let img=document.createElement(`img`);
+img.style.width='150px';
+img.style.height='250px';
+img.src=json.Poster;
+    
+let div = document.createElement(`div`);
+let pJanre = document.createElement(`p`);
+pJanre.innerHTML=json.Genre;
+ let pName = document.createElement(`p`);
+pName.innerHTML=json.Title;
+ let pYear = document.createElement(`p`);
+pYear.innerHTML=json.Year;
+    
+let det=document.createElement(`input`);
+det.type=`submit`;
+det.value=`details`;
+det.style.width='100px';
+det.style.height='50px';
+det.style.background='Darkgrey';
+det.addEventListener('click', function(){
+    var nw=window.open('film.html'); nw.json=json;})
+
+    
+div.appendChild(pJanre);
+div.appendChild(pName);
+div.appendChild(pYear);
+div.appendChild(det);
+    
+mainDiv.appendChild(img); 
+mainDiv.appendChild(div); 
+    
+bb.appendChild(mainDiv);    
+}
+    </script>
+</body>
+</html>
